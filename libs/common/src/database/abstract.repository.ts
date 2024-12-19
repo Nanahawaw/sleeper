@@ -1,4 +1,4 @@
-import { FilterQuery, Model, Types } from 'mongoose';
+import { FilterQuery, Model, Types, UpdateQuery } from 'mongoose';
 import { AbstractDocument } from './abstract.schema';
 import { Logger, NotFoundException } from '@nestjs/common';
 
@@ -13,7 +13,7 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
     return (await createdDocument.save()).toJSON() as unknown as TDocument;
   }
 
-  async findOne(filterQuery: FilterQuery<TDocument>): Promise<TDocument> {
+  async findOne(filterQuery: FilterQuery<TDocument>) {
     const document = await this.model.findOne(filterQuery, {}, { lean: true });
 
     if (!document) {
@@ -25,5 +25,28 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
 
     return document;
   }
-  async findOneAndUpdate() {}
+  async findOneAndUpdate(
+    filterQuery: FilterQuery<TDocument>,
+    update: UpdateQuery<TDocument>,
+  ) {
+    const document = await this.model.findOneAndUpdate(filterQuery, update, {
+      lean: true,
+      new: true,
+    });
+    if (!document) {
+      this.logger.warn(
+        `Document not found for filter query: ${JSON.stringify(filterQuery)}`,
+      );
+      throw new NotFoundException('Document not found for filter query');
+    }
+    return document;
+  }
+
+  async find(filterQuery: FilterQuery<TDocument>) {
+    return this.model.find(filterQuery, {}, { lean: true });
+  }
+
+  async findOneAndDelete(filterQuery: FilterQuery<TDocument>) {
+    return this.model.findOneAndDelete(filterQuery, { lean: true });
+  }
 }
