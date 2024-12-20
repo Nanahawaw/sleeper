@@ -8,4 +8,8 @@ export class UsersService {
   async createUser(createUser: CreateUserDto) {
     return this.usersRepository.create(createUser);
   }
+
+  async getUser(id: string) {
+    return this.usersRepository.findOne({ id });
+  }
 }

@@ -13,6 +13,7 @@ import { ConfigModule } from '../config/config.module';
       inject: [ConfigService],
     }),
   ],
+  exports: [MongooseModule],
 })
 export class DatabaseModule {
   static forFeature(models: ModelDefinition[]) {
