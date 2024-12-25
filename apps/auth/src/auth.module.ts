@@ -29,6 +29,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRES_IN: Joi.string().required(),
         PORT: Joi.number().required(),
+        TCP_PORT: Joi.number().required(),
       }),
     }),
   ],
